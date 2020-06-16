@@ -4,11 +4,14 @@ const WINW = 600;
 const WINH = 600;
 const numberOfCellsX = 20;
 const numberOfCellsY = 20;
+const cellW = WINW / numberOfCellsX;
+const cellH = WINH / numberOfCellsY;
 
 const defaultColor = BLACK;
 const defaultPosX = 0;
 const defaultPosY = 0;
-const lineColor = RED;
+const lineColor = BLACK;
+const filledCellColor = BLACK;
 
 function drawLine(
   ctx,
@@ -30,22 +33,39 @@ function drawLine(
   return true;
 }
 
-function drawBoard(ctx, width, height, numberOfCellsX, numberOfCellsY) {
-  if (width % numberOfCellsX != 0 || height % numberOfCellsY) {
+function drawBoard(ctx) {
+  if (WINW % numberOfCellsX != 0 || WINH % numberOfCellsY) {
     throw "cells should fit in the width and height";
   }
-  cellW = width / numberOfCellsX;
-  cellH = height / numberOfCellsY;
-  for (let x = cellW; x < width; x += cellW) {
-    drawLine(ctx, lineColor, x, 0, x, height);
+  // drawing vertical lines
+  for (let x = cellW; x < WINW; x += cellW) {
+    drawLine(ctx, lineColor, x, 0, x, WINH);
   }
-  for (let y = cellH; y < height; y += cellH) {
-    drawLine(ctx, lineColor, 0, y, width, y);
+  // drawing horizontal lines
+  for (let y = cellH; y < WINH; y += cellH) {
+    drawLine(ctx, lineColor, 0, y, WINW, y);
   }
+  // the last two lines are slightly paler than other lines
+  // but if i draw another line after them, they will be colored
+  // to what they should have been at the first place.
+  // I don't know why this happens and for know I don't care
+  // however if anyone knows how to stop it please tell me.
+}
+
+function drawRect(ctx, color = defaultColor, x = 0, y = 0, w = 0, h = 0) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = defaultColor;
+}
+
+function fillCell(ctx, x, y) {
+  const x0 = x * cellW;
+  const y0 = y * cellH;
+  drawRect(ctx, filledCellColor, x0, y0, cellW, cellH);
 }
 
 function main() {
   const ctx = document.getElementById("main-board").getContext("2d");
-  drawBoard(ctx, WINW, WINH, numberOfCellsX, numberOfCellsY);
+  drawBoard(ctx);
 }
 main();
