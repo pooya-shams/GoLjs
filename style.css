@@ -2,7 +2,21 @@
   border-style: solid;
   border-width: 2px;
   border-color: black;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  right: 50%;
+  left: 50%;
+  top: 5%;
+  margin-left: -50vh; /* This is half the width */
+  margin-top: -50vh; /* This is half the height */
+  margin-top: -3vh;
+}
+.settings button{
+  text-decoration-style: none;
+  background-color: #4caf50; /* Green background */
+  border: 1px solid green; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  width: 10%;
+  display: block; /* Make the buttons appear below each other */
 }

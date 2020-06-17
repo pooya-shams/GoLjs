@@ -4,10 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <title>Game of Life</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+    <div class="settings">
+        <button onclick="play()">start</button>
+        <button onclick="pause()">stop</button>
+        <button onclick="speedUp()">speed-up</button>
+        <button onclick="speedDown()">speed-down</button>
+    </div>
     <canvas id="main-board" width="600" height="600"></canvas>
     <script src="script.js"></script>
 </body>

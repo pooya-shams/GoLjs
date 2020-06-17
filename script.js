@@ -10,19 +10,45 @@ const numberOfCellsY = 20;
 const cellW = WINW / numberOfCellsX;
 const cellH = WINH / numberOfCellsY;
 
+function make_board(x = numberOfCellsX, y = numberOfCellsY) {
+  return Array(y)
+    .fill()
+    .map(() => Array(x).fill(false));
+}
+
+function getCursorPos(canvas, event) {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  return [x, y];
+}
+
+function onClick(canvas, event) {
+  const pos = getCursorPos(canvas, event);
+  const x = pos[0];
+  const y = pos[1];
+  findAndToggleCell(x, y);
+}
+
 const defaultColor = BLACK;
 const BGCOLOR = WHITE;
 const defaultPosX = 0;
 const defaultPosY = 0;
 const lineColor = BLACK;
 const filledCellColor = BLACK;
-const ctx = document.getElementById("main-board").getContext("2d");
+const canvas = document.getElementById("main-board");
+const ctx = canvas.getContext("2d");
 
-function make_board(x = numberOfCellsX, y = numberOfCellsY) {
-  return Array(y)
-    .fill()
-    .map(() => Array(x).fill(false));
-}
+canvas.addEventListener("mousedown", function (e) {
+  onClick(canvas, e);
+});
+
+var intervalID;
+let running = false;
+let speed = 300;
+const deltaSpeed = 100;
+const maxSpeed = 1000;
+const minSpeed = 100;
 
 let board = make_board();
 
@@ -77,6 +103,20 @@ function fillCell(x, y) {
   drawRect(filledCellColor, x0, y0, cellW, cellH);
 }
 
+function toggleCell(x, y) {
+  // just normallly toggling a cell
+  board[y][x] = !board[y][x];
+}
+
+function findAndToggleCell(x, y) {
+  // getting actual x, y (clicked point),
+  // finding the clicked cell and toggling it
+  const Xidx = Math.floor(x / cellW);
+  const Yidx = Math.floor(y / cellH);
+  toggleCell(Xidx, Yidx);
+  drawBoard();
+}
+
 function fillBoard() {
   for (let x = 0; x < numberOfCellsX; x++)
     for (let y = 0; y < numberOfCellsY; y++) {
@@ -122,7 +162,35 @@ function mainloop() {
 }
 
 function main() {
-  setInterval(mainloop, 300);
+  intervalID = setInterval(mainloop, speed);
 }
 
-main();
+function pause() {
+  if (running) {
+    window.clearInterval(intervalID);
+    running = false;
+  }
+}
+
+function play() {
+  if (!running) {
+    main();
+    running = true;
+  }
+}
+
+function reset() {
+  pause();
+  play();
+}
+
+function speedUp() {
+  speed = speed > minSpeed ? speed - deltaSpeed : speed;
+  reset();
+}
+function speedDown() {
+  speed = speed < maxSpeed ? speed + deltaSpeed : speed;
+  reset();
+}
+
+drawBoard();
